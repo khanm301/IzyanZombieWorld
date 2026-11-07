@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zombie World HQ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Nunito:wght@600;800;900&display=swap">
+<style>
+body{margin:0} [hidden]{display:none!important} img{max-width:100%}
+/* Layout: a spooky-but-silly graveyard at night. Bays are tombstone panels, slime-drip dividers, big chunky buttons for small fingers. Single dark look by choice. */
+:root{
+  --night:#17142a; --stone:#262240; --moss:#332d55; --line:#4a4378;
+  --text:#f2efff; --dim:#b8b0dc;
+  --slime:#7cf04a; --pumpkin:#ff9a2e; --sky:#4fc3ff; --grape:#c77dff; --red:#ff5a6e;
+  --display:"Creepster", "Chiller", Impact, sans-serif;
+  --body:"Nunito", "Trebuchet MS", system-ui, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--night);color:var(--text);font-family:var(--body);font-size:18px;line-height:1.5;
+  background-image:radial-gradient(circle at 85% 6%, #fff7c2 0 34px, rgba(255,247,194,.15) 35px 70px, transparent 71px),
+  radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:auto, 30px 30px;background-repeat:no-repeat,repeat}
+.wrap{max-width:960px;margin:0 auto;padding-block:20px 60px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.03em}
+h1{font-size:clamp(2.8rem,10vw,5.4rem);line-height:.95;color:var(--slime);text-shadow:4px 4px 0 #2a5a12}
+h2{font-size:clamp(1.9rem,6vw,2.8rem);color:var(--slime)}
+p{margin:0}
+.drip{height:22px;background:
+  radial-gradient(circle at 10px 0, var(--slime) 10px, transparent 11px) 0 0/40px 22px repeat-x,
+  linear-gradient(var(--slime),var(--slime)) 0 0/100% 8px no-repeat;border-radius:4px}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
+.hero p{color:var(--dim);font-size:1.15rem;margin-top:12px;max-width:36ch}
+.squad{display:flex;gap:8px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
+.squad svg{width:min(30%,130px);height:auto}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+.bay{background:var(--stone);border:3px solid var(--line);border-radius:28px 28px 16px 16px;padding:22px;display:flex;flex-direction:column;gap:16px;
+  box-shadow:0 6px 0 #0b0916}
+.label{font-weight:900;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pumpkin)}
+.btn{font-family:var(--body);font-weight:900;font-size:1.05rem;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;
+  background:var(--slime);color:#102204;box-shadow:0 5px 0 #3f8a1c;transition:transform .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #3f8a1c}
+.btn.alt{background:var(--pumpkin);color:#2a1300;box-shadow:0 5px 0 #a85e10}
+.btn.ghost{background:var(--moss);color:var(--text);box-shadow:0 5px 0 #120f22}
+.btn:focus-visible,.choice:focus-visible,.card:focus-visible{outline:4px solid var(--pumpkin);outline-offset:3px}
+.qtext{font-size:1.4rem;font-weight:900}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.choices{grid-template-columns:1fr}}
+.choice{font-family:var(--body);font-weight:800;font-size:1.1rem;text-align:left;padding:16px;border-radius:14px;cursor:pointer;
+  background:var(--night);color:var(--text);border:3px solid var(--line)}
+.choice:hover{border-color:var(--slime)}
+.dots{display:flex;gap:8px}
+.dots i{width:16px;height:16px;border-radius:50%;background:var(--moss)}
+.dots i.on{background:var(--slime)}
+.result{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center}
+.result svg{width:150px;max-width:100%}
+@media (max-width:520px){.result{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.field{display:flex;flex-direction:column;gap:6px;font-weight:800}
+.field input{font:inherit;font-size:1.2rem;padding:12px;border-radius:12px;border:3px solid var(--line);background:var(--night);color:var(--text);max-width:320px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tabs .btn[aria-pressed="true"]{background:var(--pumpkin);color:#2a1300;box-shadow:0 5px 0 #a85e10}
+.tabs.pick .btn{background:var(--moss);color:var(--text);box-shadow:0 5px 0 #120f22}
+.tabs.pick .btn[aria-pressed="true"]{background:var(--sky);color:#00203a;box-shadow:0 5px 0 #1a6aa8}
+.stack{display:flex;flex-direction:column;gap:14px}
+.score{font-weight:900;color:var(--slime);font-size:1.2rem}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:480px}
+.card{aspect-ratio:1;max-width:100%;border-radius:14px 14px 8px 8px;border:3px solid var(--line);background:var(--moss);cursor:pointer;padding:6px;display:grid;place-items:center;
+  font-family:var(--display);font-size:2rem;color:var(--line)}
+.card.open,.card.done{background:var(--night);border-color:var(--pumpkin)}
+.card.done{border-color:var(--slime)}
+.card svg{width:100%;height:100%}
+canvas{width:100%;max-width:640px;aspect-ratio:16/10;border-radius:14px;border:3px solid var(--line);background:#0f0c1f;touch-action:none;display:block}
+.sum{font-family:var(--display);font-size:clamp(2.4rem,10vw,3.8rem);letter-spacing:.05em}
+.meter{height:28px;border-radius:14px;background:var(--night);border:3px solid var(--line);overflow:hidden;max-width:480px}
+.meter b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sky),var(--slime));transition:width .3s}
+.msg{font-weight:800;min-height:1.5em}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:640px}
+.pad .btn{padding:16px 4px;font-size:1rem;touch-action:none;user-select:none;-webkit-user-select:none}
+.keys{color:var(--dim);font-size:.95rem}
+.keys kbd{font-family:var(--body);font-weight:900;background:var(--night);border:2px solid var(--line);border-radius:6px;padding:0 6px;color:var(--text)}
+footer{color:var(--dim);font-size:.9rem;text-align:center}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.squad svg{animation:bob 2.4s ease-in-out infinite}
+.squad svg:nth-child(2){animation-delay:.4s}.squad svg:nth-child(3){animation-delay:.8s}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="label">Top secret zombie patrol</div>
+      <h1>Zombie World</h1>
+      <p>The silly zombies are out of the graveyard! Jack, Izyan and Felix put on their T-visor helmets, grab their blasters, and get ready to splat them. The Zombie King has even kidnapped Princess Iqra, Izyan's sister! Find out which hero you are, then play the games to save the town.</p>
+    </div>
+    <div class="squad" id="squad"></div>
+  </header>
+
+  <div class="drip"></div>
+
+  <section class="bay" id="quiz">
+    <div class="label">Mission 1 · Questionnaire</div>
+    <h2>Which Zombie Hunter Are You?</h2>
+    <div id="quizBody"></div>
+  </section>
+
+  <div class="drip"></div>
+
+  <section class="bay" id="games">
+    <div class="label">Mission 2 · Games</div>
+    <h2>Zombie Games</h2>
+    <div class="tabs" role="group" aria-label="Pick a game">
+      <button class="btn" id="tab-memory" aria-pressed="true">Graveyard Match</button>
+      <button class="btn" id="tab-catch" aria-pressed="false">Zombie Blaster</button>
+      <button class="btn" id="tab-math" aria-pressed="false">Zapper Math</button>
+      <button class="btn" id="tab-quest" aria-pressed="false">Save Princess Iqra</button>
+    </div>
+
+    <div id="g-memory" class="stack">
+      <p>Flip two tombstones at a time. Find all the matching pairs!</p>
+      <div class="score" id="memScore">Moves: 0</div>
+      <div class="grid" id="memGrid"></div>
+      <div><button class="btn ghost" id="memNew">New game</button></div>
+    </div>
+
+    <div id="g-catch" class="stack" hidden>
+      <p>Pick your hero. Your blaster fires all by itself, so just move left and right to splat the zombies before they reach the ground! Use the arrow keys, or drag your finger on the screen.</p>
+      <div class="tabs pick" role="group" aria-label="Pick your hero" id="heroPick"></div>
+      <div class="score" id="catchScore">Zombies splatted: 0 · Lives: 3</div>
+      <canvas id="cv" width="640" height="400"></canvas>
+      <div><button class="btn alt" id="catchGo">Start!</button></div>
+    </div>
+
+    <div id="g-math" class="stack" hidden>
+      <p>Every right answer charges Izyan's Laser Zapper. Fill it to 100% to zap a zombie back to bed!</p>
+      <div class="sum" id="sum">3 + 4 = ?</div>
+      <div class="choices" id="mathChoices"></div>
+      <div class="meter"><b id="meter"></b></div>
+      <div class="msg" id="mathMsg"></div>
+    </div>
+
+    <div id="g-quest" class="stack" hidden>
+      <p>The Zombie King has trapped Princess Iqra, Izyan's little sister, in his tower! Run and jump through Zombie World. Swing your sword, fire your blaster, or jump on zombies' heads to splat them. Beat the Zombie King to open the cage.</p>
+      <div class="tabs pick" role="group" aria-label="Pick your hero" id="questPick"></div>
+      <canvas id="cv2" width="640" height="400" tabindex="0" aria-label="Save Princess Iqra game"></canvas>
+      <div class="pad" id="pad">
+        <button class="btn ghost" data-a="left" aria-label="Move left">◀</button>
+        <button class="btn ghost" data-a="right" aria-label="Move right">▶</button>
+        <button class="btn" data-a="jump">Jump</button>
+        <button class="btn alt" data-a="sword">Sword</button>
+        <button class="btn alt" data-a="blast">Blast</button>
+      </div>
+      <p class="keys">Keyboard: <kbd>←</kbd> <kbd>→</kbd> move · <kbd>↑</kbd> or <kbd>Space</kbd> jump · <kbd>X</kbd> sword · <kbd>Z</kbd> blaster</p>
+      <div><button class="btn" id="questGo">Start!</button></div>
+    </div>
+  </section>
+
+  <footer>Zombie World stars Jack, Izyan, Felix and Princess Iqra. No real zombies were harmed.</footer>
+</div>
+
+<script>
+const HEROES={
+  jack:{name:"Jack",shirt:"#ff9a2e",helmet:"#d9dde8",shot:"#7cf04a",gear:"Slime Blaster",
+    about:"You are brave and lead the team. When the zombies show up, you're first to say \"Follow me!\" Jack's Slime Blaster splats zombies with green goo."},
+  izyan:{name:"Izyan",shirt:"#4fc3ff",helmet:"#3b4a8a",shot:"#4fc3ff",gear:"Laser Zapper",
+    about:"You are super smart and love to invent things. Izyan built his own Laser Zapper, and it zaps zombies so hard they snore all the way back to bed."},
+  felix:{name:"Felix",shirt:"#c77dff",helmet:"#ffd23a",shot:"#ff5a6e",gear:"Turbo Blaster",
+    about:"You are fast and funny! Felix's Turbo Blaster shoots super-speedy goo balls, and he never misses."}
+};
+function heroSVG(k){
+  const h=HEROES[k];
+  return `<svg viewBox="0 0 112 130" role="img" aria-label="${h.name} in a T-visor helmet with a blaster">
+  <rect x="28" y="70" width="44" height="40" rx="12" fill="${h.shirt}" stroke="#0b0916" stroke-width="4"/>
+  <rect x="32" y="108" width="14" height="18" rx="4" fill="#2c2a4a" stroke="#0b0916" stroke-width="3"/>
+  <rect x="54" y="108" width="14" height="18" rx="4" fill="#2c2a4a" stroke="#0b0916" stroke-width="3"/>
+  <path d="M20 46a30 30 0 0160 0v14q0 8-8 8H28q-8 0-8-8z" fill="${h.helmet}" stroke="#0b0916" stroke-width="4"/>
+  <rect x="47" y="14" width="6" height="18" rx="3" fill="${h.shirt}" stroke="#0b0916" stroke-width="2"/>
+  <path d="M30 38h40v10H56v16H44V48H30z" fill="#0b0916"/>
+  <rect x="33" y="40" width="10" height="3" rx="1.5" fill="${h.shot}" opacity=".8"/>
+  <text x="50" y="96" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#0b0916">${h.name[0]}</text>
+  <rect x="62" y="80" width="16" height="10" rx="5" fill="${h.shirt}" stroke="#0b0916" stroke-width="3"/>
+  <rect x="72" y="74" width="34" height="14" rx="5" fill="#5b5f73" stroke="#0b0916" stroke-width="3"/>
+  <rect x="78" y="86" width="8" height="12" rx="2" fill="#5b5f73" stroke="#0b0916" stroke-width="3"/>
+  <rect x="100" y="76" width="9" height="10" rx="3" fill="${h.shot}" stroke="#0b0916" stroke-width="2"/>
+  </svg>`;
+}
+const ZOMBIE=`<svg viewBox="0 0 100 100" role="img" aria-label="Silly zombie"><circle cx="50" cy="52" r="38" fill="#9be36a" stroke="#0b0916" stroke-width="4"/>
+  <circle cx="36" cy="46" r="11" fill="#fff" stroke="#0b0916" stroke-width="3"/><circle cx="64" cy="44" r="7" fill="#fff" stroke="#0b0916" stroke-width="3"/>
+  <circle cx="38" cy="48" r="4" fill="#0b0916"/><circle cx="65" cy="45" r="3" fill="#0b0916"/>
+  <path d="M34 70q16 -8 32 4" stroke="#0b0916" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="44" y="68" width="7" height="8" fill="#fff" stroke="#0b0916" stroke-width="2"/>
+  <path d="M30 18l6 10 4-12 6 10" stroke="#0b0916" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
+document.getElementById('squad').innerHTML=Object.keys(HEROES).map(heroSVG).join('');
+
+/* ---------- Questionnaire ---------- */
+const QS=[
+ {q:"The zombies are coming! What do you do first?",a:[["Lead everyone to safety",'jack'],["Build a zombie trap",'izyan'],["Zoom away super fast",'felix']]},
+ {q:"Pick your zombie-fighting blaster!",a:[["Slime Blaster",'jack'],["Laser Zapper",'izyan'],["Turbo Blaster",'felix']]},
+ {q:"Where is the best hideout?",a:[["A tree fort",'jack'],["A secret lab",'izyan'],["A skate park",'felix']]},
+ {q:"A zombie steals your snack! You...",a:[["Chase it and get it back",'jack'],["Trick it with a fake snack",'izyan'],["Tell a joke so it drops it",'felix']]},
+ {q:"What's your favorite color?",a:[["Orange",'jack'],["Blue",'izyan'],["Purple",'felix']]},
+ {q:"What would you yell when you win?",a:[["Zombies, you're done!",'jack'],["My plan worked!",'izyan'],["Too fast for you!",'felix']]}
+];
+let qi=0,tally={},pilot="";
+const qb=document.getElementById('quizBody');
+const esc=s=>s.replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+function quizStart(){
+  qi=0;tally={};
+  let saved="";try{saved=localStorage.getItem('zname')||""}catch(e){}
+  qb.innerHTML=`<div class="stack"><label class="field" for="pilotName">What's your name, zombie hunter?
+    <input id="pilotName" maxlength="20" placeholder="Type your name" value="${esc(saved)}"></label>
+    <div><button class="btn" id="qGo">Start the questions</button></div></div>`;
+  document.getElementById('qGo').onclick=()=>{
+    pilot=document.getElementById('pilotName').value.trim()||"Hunter";
+    try{localStorage.setItem('zname',pilot)}catch(e){}
+    quizShow();
+  };
+}
+function quizShow(){
+  const Q=QS[qi];
+  qb.innerHTML=`<div class="stack"><div class="dots">${QS.map((_,i)=>`<i class="${i<=qi?'on':''}"></i>`).join('')}</div>
+   <div class="qtext">${Q.q}</div>
+   <div class="choices">${Q.a.map((x,i)=>`<button class="choice" data-k="${x[1]}" id="c${i}">${x[0]}</button>`).join('')}</div></div>`;
+  qb.querySelectorAll('.choice').forEach(btn=>btn.onclick=()=>{
+    tally[btn.dataset.k]=(tally[btn.dataset.k]||0)+1;qi++;
+    qi<QS.length?quizShow():quizResult();
+  });
+}
+function quizResult(){
+  const keys=Object.keys(HEROES);let best=keys[0];
+  keys.forEach(k=>{if((tally[k]||0)>(tally[best]||0))best=k});
+  const h=HEROES[best];
+  qb.innerHTML=`<div class="result">${heroSVG(best)}<div class="stack">
+    <div class="label">Scan complete, ${esc(pilot)}!</div>
+    <h3 style="font-size:2.4rem;color:${h.shirt}">You are like ${h.name}!</h3>
+    <p>${h.about}</p>
+    <div class="tabs"><button class="btn" id="qAgain">Take it again</button>
+    <a class="btn alt" href="#games" style="text-decoration:none">Go play games</a></div></div></div>`;
+  document.getElementById('qAgain').onclick=quizStart;
+}
+quizStart();
+
+/* ---------- Game tabs ---------- */
+const games=['memory','catch','math','quest'];
+games.forEach(g=>document.getElementById('tab-'+g).onclick=()=>{
+  games.forEach(x=>{document.getElementById('g-'+x).hidden=x!==g;document.getElementById('tab-'+x).setAttribute('aria-pressed',x===g)});
+  if(g!=='catch')running=false;
+  if(g!=='quest'&&prun){prun=false;pIdle()}
+});
+
+/* ---------- Graveyard Match ---------- */
+const ICONS=[...Object.keys(HEROES).map(k=>({k,svg:heroSVG(k)})),
+ {k:'zombie',svg:ZOMBIE},
+ {k:'pumpkin',svg:`<svg viewBox="0 0 100 100"><rect x="46" y="8" width="8" height="16" rx="3" fill="#3f8a1c"/><ellipse cx="50" cy="58" rx="40" ry="34" fill="#ff9a2e" stroke="#0b0916" stroke-width="4"/><path d="M34 50l8 -8 8 8zM58 50l8 -8 8 8z" fill="#0b0916"/><path d="M32 66q18 14 36 0l-6 4-6-4-6 4-6-4-6 4z" fill="#0b0916"/></svg>`},
+ {k:'ghost',svg:`<svg viewBox="0 0 100 100"><path d="M20 90V44a30 30 0 0160 0v46l-10-8-10 8-10-8-10 8-10-8z" fill="#f2efff" stroke="#0b0916" stroke-width="4"/><circle cx="40" cy="44" r="5" fill="#0b0916"/><circle cx="60" cy="44" r="5" fill="#0b0916"/><ellipse cx="50" cy="60" rx="6" ry="8" fill="#0b0916"/></svg>`},
+ {k:'moon',svg:`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#fff7c2" stroke="#0b0916" stroke-width="4"/><circle cx="36" cy="40" r="6" fill="#e8dc8a"/><circle cx="60" cy="62" r="9" fill="#e8dc8a"/><circle cx="64" cy="34" r="4" fill="#e8dc8a"/></svg>`}];
+let memOpen=[],memMoves=0,memDone=0,memLock=false;
+function memNew(){
+  const deck=[...ICONS,...ICONS].sort(()=>Math.random()-.5);
+  memOpen=[];memMoves=0;memDone=0;memLock=false;
+  document.getElementById('memScore').textContent='Moves: 0';
+  const g=document.getElementById('memGrid');g.innerHTML='';
+  deck.forEach((ic,i)=>{
+    const c=document.createElement('button');c.className='card';c.id='card'+i;c.dataset.k=ic.k;c.setAttribute('aria-label','Hidden tombstone');c.textContent='?';
+    c.onclick=()=>{
+      if(memLock||c.classList.contains('open')||c.classList.contains('done'))return;
+      c.classList.add('open');c.innerHTML=ic.svg;memOpen.push(c);
+      if(memOpen.length===2){
+        memMoves++;document.getElementById('memScore').textContent='Moves: '+memMoves;
+        const[a,b]=memOpen;
+        if(a.dataset.k===b.dataset.k){a.classList.add('done');b.classList.add('done');memOpen=[];memDone+=2;
+          if(memDone===deck.length)document.getElementById('memScore').textContent=`You found them all in ${memMoves} moves! The graveyard is safe!`;}
+        else{memLock=true;setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove('open');x.textContent='?'});memOpen=[];memLock=false},850)}
+      }
+    };
+    g.appendChild(c);
+  });
+}
+document.getElementById('memNew').onclick=memNew;memNew();
+
+/* ---------- Zombie Blaster ---------- */
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let running=false,px=320,zombies=[],shots=[],splats=[],score=0,lives=3,keys={},tick=0,hero='jack';
+const pick=document.getElementById('heroPick');
+pick.innerHTML=Object.keys(HEROES).map(k=>`<button class="btn" id="pick-${k}" data-k="${k}" aria-pressed="${k===hero}">${HEROES[k].name}</button>`).join('');
+pick.querySelectorAll('button').forEach(b=>b.onclick=()=>{hero=b.dataset.k;pick.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(!running)idle()});
+function drawHero(x){
+  const h=HEROES[hero],y=322;
+  ctx.fillStyle='#2c2a4a';ctx.fillRect(x-14,y+28,11,18);ctx.fillRect(x+3,y+28,11,18);
+  ctx.fillStyle=h.shirt;ctx.fillRect(x-20,y,40,32);
+  /* blaster pointing up */
+  ctx.fillStyle='#5b5f73';ctx.fillRect(x+14,y-34,12,40);
+  ctx.fillStyle=h.shot;ctx.fillRect(x+15,y-40,10,8);
+  /* helmet with T visor */
+  ctx.fillStyle=h.helmet;ctx.beginPath();ctx.arc(x,y-14,19,Math.PI,0);ctx.lineTo(x+19,y-2);ctx.lineTo(x-19,y-2);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#0b0916';ctx.fillRect(x-13,y-20,26,6);ctx.fillRect(x-4,y-14,8,11);
+  ctx.fillStyle=h.shirt;ctx.fillRect(x-2,y-38,4,8);
+  ctx.fillStyle='#0b0916';ctx.font='900 15px Nunito, sans-serif';ctx.textAlign='center';ctx.fillText(h.name[0],x,y+22);
+}
+function drawZombie(z){
+  const x=z.x,y=z.y,arm=Math.sin((tick+z.w)/8)*4;
+  ctx.fillStyle='#4a3f7a';ctx.fillRect(x-12,y+12,24,22);
+  ctx.fillStyle='#9be36a';ctx.fillRect(x-26,y+14+arm,14,6);ctx.fillRect(x+12,y+14-arm,14,6);
+  ctx.beginPath();ctx.arc(x,y,16,0,7);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x-6,y-3,5,0,7);ctx.arc(x+7,y-4,3.5,0,7);ctx.fill();
+  ctx.fillStyle='#0b0916';ctx.beginPath();ctx.arc(x-5,y-2,2,0,7);ctx.arc(x+7,y-3,1.6,0,7);ctx.fill();
+  ctx.strokeStyle='#0b0916';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x-7,y+8);ctx.lineTo(x+8,y+6);ctx.stroke();
+}
+function scene(){
+  ctx.fillStyle='#0f0c1f';ctx.fillRect(0,0,640,400);
+  ctx.fillStyle='#fff7c2';ctx.beginPath();ctx.arc(560,60,30,0,7);ctx.fill();
+  ctx.fillStyle='#262240';[[60,330],[180,325],[470,332],[590,326]].forEach(([x,y])=>{ctx.beginPath();ctx.moveTo(x-16,y+40);ctx.lineTo(x-16,y);ctx.arc(x,y,16,Math.PI,0);ctx.lineTo(x+16,y+40);ctx.fill()});
+  ctx.fillStyle='#2a5a12';ctx.fillRect(0,368,640,32);
+}
+function scoreTxt(){document.getElementById('catchScore').textContent=`Zombies splatted: ${score} · Lives: ${lives}`}
+function frame(){
+  if(!running)return;
+  tick++;
+  if(keys.ArrowLeft)px-=7;if(keys.ArrowRight)px+=7;px=Math.max(30,Math.min(610,px));
+  if(tick%14===0)shots.push({x:px+20,y:282});
+  const speed=0.9+score*0.04;
+  if(tick%Math.max(30,70-score*2)===0)zombies.push({x:40+Math.random()*560,y:-20,w:Math.random()*50});
+  scene();
+  const h=HEROES[hero];
+  shots.forEach(s=>s.y-=9);
+  shots=shots.filter(s=>s.y>-10);
+  zombies.forEach(z=>z.y+=speed);
+  zombies=zombies.filter(z=>{
+    const hit=shots.find(s=>Math.abs(s.x-z.x)<22&&Math.abs(s.y-z.y)<22);
+    if(hit){hit.y=-99;score++;scoreTxt();splats.push({x:z.x,y:z.y,t:20});return false}
+    if(z.y>300){lives--;scoreTxt();return false}
+    return true;
+  });
+  ctx.fillStyle=h.shot;shots.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,5,0,7);ctx.fill()});
+  zombies.forEach(drawZombie);
+  splats.forEach(p=>{p.t--;ctx.globalAlpha=p.t/20;ctx.fillStyle=h.shot;for(let i=0;i<7;i++){const a=i*0.9;ctx.beginPath();ctx.arc(p.x+Math.cos(a)*(26-p.t),p.y+Math.sin(a)*(26-p.t),5,0,7);ctx.fill()}
+    ctx.font='900 18px Nunito, sans-serif';ctx.textAlign='center';ctx.fillText('SPLAT!',p.x,p.y-24);ctx.globalAlpha=1});
+  splats=splats.filter(p=>p.t>0);
+  drawHero(px);
+  if(lives<=0){running=false;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,400);
+    ctx.fillStyle='#7cf04a';ctx.font='40px Creepster, Impact, sans-serif';ctx.textAlign='center';
+    ctx.fillText(`${h.name} splatted ${score} zombies!`,320,190);ctx.font='800 20px Nunito, sans-serif';ctx.fillStyle='#f2efff';ctx.fillText('Press Start to play again',320,232);
+    document.getElementById('catchGo').textContent='Play again';return}
+  requestAnimationFrame(frame);
+}
+function idle(){scene();drawHero(320);ctx.fillStyle='#7cf04a';ctx.font='38px Creepster, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('Press Start!',320,170)}
+idle();
+if(document.fonts)document.fonts.ready.then(()=>{if(!running)idle()});
+document.getElementById('catchGo').onclick=()=>{zombies=[];shots=[];splats=[];score=0;lives=3;px=320;tick=0;scoreTxt();if(!running){running=true;frame()}};
+addEventListener('keydown',e=>{if(running&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){keys[e.key]=true;e.preventDefault()}});
+addEventListener('keyup',e=>{keys[e.key]=false});
+function pointer(e){const r=cv.getBoundingClientRect();px=(e.clientX-r.left)/r.width*640}
+cv.addEventListener('pointerdown',pointer);cv.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')pointer(e)});
+
+/* ---------- Save Princess Iqra (side-scroller) ---------- */
+const pc=document.getElementById('cv2'),pctx=pc.getContext('2d');
+const PW=640,PH=400,WORLD=4000,GY=360,CAGE=3870;
+const GROUND=[[0,800],[890,1500],[1600,2300],[2400,3200],[3290,4000]];
+const PLAT=[[300,280,120],[520,215,120],[1000,270,140],[1200,200,110],[1700,280,120],[1900,215,120],[2100,160,110],[2500,270,140],[2750,205,120],[3000,270,110]];
+const SOL=[...GROUND.map(([a,b])=>({x:a,y:GY,w:b-a,h:80})),...PLAT.map(([x,y,w])=>({x,y,w,h:16}))];
+const CHECK=[60,900,1620,2420,3310];
+const STARS=[[350,240],[385,240],[570,175],[605,175],[700,320],[1050,230],[1090,230],[1240,160],[1450,320],[1750,240],[1950,175],[2140,120],[2175,120],[2250,320],[2550,230],[2800,165],[3040,230],[3150,320]];
+const ZSPAWN=[[600,GY],[1100,GY],[1040,270],[1350,GY],[1800,GY],[1930,215],[2000,GY],[2200,GY],[2540,270],[2650,GY],[2900,GY],[3100,GY]];
+let pq,prun=false,pkeys={},pHero='izyan',pLast=0,pAcc=0;
+const hitR=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+function moveBody(e){
+  e.hitWall=false;e.x+=e.vx;
+  for(const s of SOL)if(hitR(e,s)){if(e.vx>0)e.x=s.x-e.w;else if(e.vx<0)e.x=s.x+s.w;e.hitWall=true}
+  e.vy=Math.min(e.vy+0.6,14);e.y+=e.vy;e.onGround=false;
+  for(const s of SOL)if(hitR(e,s)){if(e.vy>0){e.y=s.y-e.h;e.onGround=true}else e.y=s.y+s.h;e.vy=0}
+}
+function pReset(){
+  pq={x:60,y:GY-44,w:26,h:44,vx:0,vy:0,face:1,onGround:false,inv:0,safe:0,kb:0,kbDir:0,sw:0,swId:0,swHeld:false,cd:0,
+    lives:3,stars:0,cam:0,t:0,shots:[],splats:[],won:false,over:false,msg:'',msgT:0,
+    items:STARS.map(s=>({x:s[0],y:s[1],got:false})),
+    zs:[...ZSPAWN.map(([x,top])=>({x,y:top-41,w:28,h:40,vx:-1,vy:0,hp:1,boss:false,alive:true,hitBy:-1,flash:0})),
+        {x:3650,y:GY-71,w:54,h:70,vx:-1.4,vy:0,hp:8,max:8,boss:true,alive:true,hitBy:-1,flash:0}]};
+}
+function say(m){pq.msg=m;pq.msgT=150}
+function hurtZ(z,d){
+  z.hp-=d;z.flash=12;
+  if(z.hp<=0){z.alive=false;pq.splats.push({x:z.x+z.w/2,y:z.y+z.h/2,t:26,big:z.boss});
+    if(z.boss)say('You splatted the Zombie King! Run to the cage and free Iqra!')}
+}
+function loseLife(){
+  const p=pq;p.lives--;
+  if(p.lives<=0){p.over=true;return true}
+  return false;
+}
+function hurtP(dir){
+  const p=pq;if(p.inv>0||p.safe>0)return;
+  if(loseLife())return;
+  p.inv=90;p.vy=-7;p.kb=12;p.kbDir=dir;say('Ouch! Watch out for zombies!');
+}
+function pStep(){
+  const p=pq;p.t++;
+  if(p.kb>0){p.vx=p.kbDir*5;p.kb--}
+  else{p.vx=(pkeys.right?4.2:0)-(pkeys.left?4.2:0);if(p.vx)p.face=Math.sign(p.vx)}
+  if(pkeys.jump&&p.onGround)p.vy=-12.5;
+  if(!pkeys.jump&&p.vy<-5)p.vy=-5;
+  moveBody(p);p.x=Math.max(0,Math.min(WORLD-p.w,p.x));
+  if(pkeys.sword&&!p.swHeld&&p.sw===0){p.sw=16;p.swId++}
+  p.swHeld=!!pkeys.sword;if(p.sw>0)p.sw--;
+  if(p.cd>0)p.cd--;
+  if(pkeys.blast&&p.cd===0){p.shots.push({x:p.x+p.w/2+p.face*24,y:p.y+24,vx:p.face*10,life:55});p.cd=16}
+  if(p.inv>0)p.inv--;if(p.safe>0)p.safe--;
+  p.shots.forEach(s=>{s.x+=s.vx;s.life--;if(SOL.some(o=>s.x>o.x&&s.x<o.x+o.w&&s.y>o.y&&s.y<o.y+o.h))s.life=0});
+  p.shots=p.shots.filter(s=>s.life>0);
+  const sb=p.sw>3?{x:p.face>0?p.x+p.w-4:p.x-42,y:p.y-8,w:46,h:54}:null;
+  for(const z of p.zs){
+    if(!z.alive)continue;
+    if(Math.abs(z.x-p.x)>800)continue;
+    moveBody(z);
+    const fx=z.vx>0?z.x+z.w+2:z.x-2,fy=z.y+z.h+4;
+    const floor=SOL.some(o=>fx>o.x&&fx<o.x+o.w&&fy>o.y&&fy<o.y+o.h);
+    if(z.hitWall||(z.onGround&&!floor))z.vx*=-1;
+    if(z.boss){if(z.x<3330)z.vx=Math.abs(z.vx);if(z.x>3790)z.vx=-Math.abs(z.vx)}
+    if(z.flash>0)z.flash--;
+    if(z.y>PH+100){z.alive=false;continue}
+    for(const s of p.shots)if(s.life>0&&s.x>z.x&&s.x<z.x+z.w&&s.y>z.y&&s.y<z.y+z.h){s.life=0;hurtZ(z,1)}
+    if(z.alive&&sb&&z.hitBy!==p.swId&&hitR(sb,z)){z.hitBy=p.swId;hurtZ(z,2)}
+    if(!z.alive)continue;
+    if(hitR(p,z)){
+      if(p.vy>0&&p.y+p.h-p.vy<=z.y+12){p.vy=-9;p.safe=15;hurtZ(z,1)}
+      else hurtP(z.x+z.w/2<p.x+p.w/2?1:-1);
+    }
+  }
+  p.shots=p.shots.filter(s=>s.life>0);
+  p.splats.forEach(s=>s.t--);p.splats=p.splats.filter(s=>s.t>0);
+  for(const it of p.items)if(!it.got&&Math.abs(it.x-(p.x+p.w/2))<24&&Math.abs(it.y-(p.y+p.h/2))<30){it.got=true;p.stars++}
+  if(p.y>PH+60){
+    if(!loseLife()){const cx=Math.max(...CHECK.filter(c=>c<=p.x+20));p.x=cx;p.y=GY-p.h-4;p.vy=0;p.inv=90;say('Oops, you fell! Try that jump again.')}
+  }
+  const boss=p.zs.find(z=>z.boss);
+  if(p.x+p.w>CAGE){
+    if(boss.alive){p.x=CAGE-p.w;if(p.msgT<60)say('Splat the Zombie King to open the cage!')}
+    else p.won=true;
+  }
+  if(p.msgT>0)p.msgT--;
+  p.cam=Math.max(0,Math.min(WORLD-PW,p.x-260));
+}
+/* ---- drawing ---- */
+function drawIqra(c,x,y,free){
+  /* x = center, y = feet */
+  c.fillStyle='#2b1a12';c.beginPath();c.ellipse(x,y-50,17,22,0,0,7);c.fill();
+  c.fillStyle='#ff7ac8';c.beginPath();c.moveTo(x-20,y);c.lineTo(x+20,y);c.lineTo(x+9,y-34);c.lineTo(x-9,y-34);c.closePath();c.fill();
+  c.fillStyle='#f2c39b';
+  if(free){c.fillRect(x-16,y-52,5,18);c.fillRect(x+11,y-52,5,18)}else{c.fillRect(x-14,y-32,5,14);c.fillRect(x+9,y-32,5,14)}
+  c.beginPath();c.arc(x,y-50,13,0,7);c.fill();
+  c.fillStyle='#2b1a12';c.beginPath();c.arc(x,y-56,13,Math.PI,0);c.fill();
+  c.fillStyle='#0b0916';c.beginPath();c.arc(x-5,y-49,2,0,7);c.arc(x+5,y-49,2,0,7);c.fill();
+  c.strokeStyle='#0b0916';c.lineWidth=2;c.beginPath();free?c.arc(x,y-45,5,0.2,Math.PI-0.2):c.arc(x,y-40,4,Math.PI+0.3,-0.3);c.stroke();
+  c.fillStyle='#ffd23a';c.beginPath();c.moveTo(x-11,y-66);c.lineTo(x-11,y-76);c.lineTo(x-5,y-70);c.lineTo(x,y-79);c.lineTo(x+5,y-70);c.lineTo(x+11,y-76);c.lineTo(x+11,y-66);c.closePath();c.fill();
+}
+function drawPlayer(c){
+  const p=pq,h=HEROES[pHero];
+  if(p.inv>0&&Math.floor(p.t/4)%2)return;
+  const cx=p.x+p.w/2,y=p.y,f=p.face,step=p.onGround&&p.vx?Math.sin(p.t/3)*4:0;
+  c.fillStyle='#2c2a4a';c.fillRect(cx-9,y+34+Math.max(0,step)*0,8,10-Math.max(0,-step));c.fillRect(cx+1,y+34,8,10-Math.max(0,step));
+  if(p.sw===0){c.strokeStyle='#c9cfdf';c.lineWidth=4;c.beginPath();c.moveTo(cx-f*6,y+38);c.lineTo(cx-f*14,y+16);c.stroke();c.fillStyle='#8a5a2b';c.fillRect(cx-f*6-3,y+34,6,6)}
+  c.fillStyle=h.shirt;c.fillRect(cx-12,y+20,24,16);
+  c.fillStyle='#0b0916';c.font='900 11px Nunito, sans-serif';c.textAlign='center';c.fillText(h.name[0],cx,y+32);
+  c.fillStyle=h.helmet;c.beginPath();c.arc(cx,y+12,12,0,7);c.fill();
+  c.fillStyle=h.shirt;c.fillRect(cx-2,y-4,4,7);
+  c.fillStyle='#0b0916';c.fillRect(cx-8+f*3,y+7,16,4);c.fillRect(cx-2+f*3,y+7,4,12);
+  if(p.sw>0){
+    const a=(16-p.sw)/16,ang=f>0?(-1.5+a*2.6):(Math.PI+1.5-a*2.6),hx=cx+f*8,hy=y+26;
+    c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=10;c.beginPath();
+    f>0?c.arc(hx,hy,32,-1.5,ang):c.arc(hx,hy,32,ang,Math.PI+1.5);c.stroke();
+    c.strokeStyle='#e6ebf5';c.lineWidth=5;c.beginPath();c.moveTo(hx,hy);c.lineTo(hx+Math.cos(ang)*36,hy+Math.sin(ang)*36);c.stroke();
+    c.fillStyle='#8a5a2b';c.beginPath();c.arc(hx,hy,4,0,7);c.fill();
+  }else{
+    c.fillStyle='#5b5f73';c.fillRect(f>0?cx+4:cx-24,y+22,20,7);c.fillRect(f>0?cx+6:cx-10,y+27,5,7);
+    c.fillStyle=h.shot;c.fillRect(f>0?cx+22:cx-26,y+21,5,9);
+  }
+}
+function drawZ(c,z){
+  const s=z.h/40,dir=Math.sign(z.vx)||-1,wob=Math.sin((pq.t+z.x)/7)*2;
+  c.save();c.translate(z.x+z.w/2,z.y);c.scale(s,s);
+  const skin=z.flash%4>1?'#ffffff':(z.boss?'#7bc94f':'#9be36a');
+  c.fillStyle='#2c2a4a';c.fillRect(-9,33,7,7);c.fillRect(2,33,7,7);
+  c.fillStyle=z.boss?'#7a2e5a':'#4a3f7a';c.fillRect(-11,21,22,14);
+  c.fillStyle=skin;c.fillRect(dir>0?0:-22,23+wob,22,5);c.fillRect(dir>0?0:-20,28-wob,20,4);
+  c.beginPath();c.arc(0,11,12,0,7);c.fill();
+  c.fillStyle='#fff';c.beginPath();c.arc(dir*3-4,9,4,0,7);c.arc(dir*3+5,8,3,0,7);c.fill();
+  c.fillStyle='#0b0916';c.beginPath();c.arc(dir*3-3,10,1.7,0,7);c.arc(dir*3+5,9,1.4,0,7);c.fill();
+  c.strokeStyle='#0b0916';c.lineWidth=1.8;c.beginPath();c.moveTo(-5,17);c.lineTo(6,16);c.stroke();
+  if(z.boss){c.fillStyle='#ffd23a';c.beginPath();c.moveTo(-9,1);c.lineTo(-9,-8);c.lineTo(-4,-3);c.lineTo(0,-10);c.lineTo(4,-3);c.lineTo(9,-8);c.lineTo(9,1);c.closePath();c.fill()}
+  c.restore();
+}
+function pDraw(){
+  const c=pctx,p=pq,cam=p.cam,boss=p.zs.find(z=>z.boss);
+  c.fillStyle='#0f0c1f';c.fillRect(0,0,PW,PH);
+  c.fillStyle='#4a4378';for(let i=0;i<50;i++)c.fillRect((i*131)%PW,(i*71)%220,2,2);
+  c.fillStyle='#fff7c2';c.beginPath();c.arc(540,64,30,0,7);c.fill();
+  c.fillStyle='#1d1838';c.beginPath();c.moveTo(0,PH);
+  for(let x=0;x<=PW;x+=20)c.lineTo(x,250+Math.sin((x+cam*0.3)/90)*30);c.lineTo(PW,PH);c.fill();
+  c.save();c.translate(-Math.round(cam),0);
+  for(let x=150;x<WORLD;x+=260){if(GROUND.some(([a,b])=>x>a+20&&x<b-20)){c.fillStyle='#2f2a50';c.beginPath();c.moveTo(x-14,GY);c.lineTo(x-14,GY-26);c.arc(x,GY-26,14,Math.PI,0);c.lineTo(x+14,GY);c.fill();
+    c.fillStyle='#4a4378';c.fillRect(x-2,GY-34,4,14);c.fillRect(x-6,GY-30,12,4)}}
+  c.fillStyle='#3a2e3a';c.fillRect(CAGE+10,150,110,GY-150);
+  c.fillStyle='#4a3f5a';for(let yy=150;yy<GY;yy+=24)for(let xx=CAGE+10+((yy/24)%2)*12;xx<CAGE+120;xx+=26)c.fillRect(xx,yy,22,20);
+  c.fillStyle='#3a2e3a';for(let i=0;i<4;i++)c.fillRect(CAGE+12+i*28,132,18,20);
+  for(const g of SOL){
+    if(g.h===80){c.fillStyle='#3b2a4a';c.fillRect(g.x,g.y,g.w,g.h);c.fillStyle='#2a5a12';c.fillRect(g.x,g.y,g.w,10);
+      c.fillStyle='#7cf04a';c.fillRect(g.x,g.y,g.w,3)}
+    else{c.fillStyle='#4a4378';c.fillRect(g.x,g.y,g.w,g.h);c.fillStyle='#7cf04a';c.fillRect(g.x,g.y,g.w,4);
+      c.fillStyle='#332d55';for(let xx=g.x+20;xx<g.x+g.w;xx+=30)c.fillRect(xx,g.y+6,2,10)}
+  }
+  for(const it of p.items)if(!it.got){c.save();c.translate(it.x,it.y+Math.sin((p.t+it.x)/12)*3);c.fillStyle='#ffd23a';c.beginPath();
+    for(let i=0;i<10;i++){const r=i%2?5:11,a=i*Math.PI/5-Math.PI/2;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();c.restore()}
+  drawIqra(c,CAGE+60,GY,!boss.alive||p.won);
+  if(!p.won){c.fillStyle=boss.alive?'#9aa0b5':'rgba(154,160,181,.35)';for(let i=0;i<6;i++)c.fillRect(CAGE+28+i*13,GY-95,4,95);c.fillRect(CAGE+24,GY-98,76,5)}
+  for(const z of p.zs)if(z.alive)drawZ(c,z);
+  const sh=HEROES[pHero].shot;c.fillStyle=sh;for(const s of p.shots){c.beginPath();c.arc(s.x,s.y,5,0,7);c.fill()}
+  for(const s of p.splats){c.globalAlpha=s.t/26;c.fillStyle='#7cf04a';const r=s.big?2:1;
+    for(let i=0;i<8;i++){const a=i*0.8;c.beginPath();c.arc(s.x+Math.cos(a)*(30-s.t)*r,s.y+Math.sin(a)*(30-s.t)*r,5*r,0,7);c.fill()}
+    c.fillStyle='#fff';c.font=`900 ${s.big?26:18}px Nunito, sans-serif`;c.textAlign='center';c.fillText('SPLAT!',s.x,s.y-26);c.globalAlpha=1}
+  drawPlayer(c);
+  c.restore();
+  /* HUD */
+  c.fillStyle='rgba(15,12,31,.7)';c.fillRect(8,8,236,34);
+  c.font='900 18px Nunito, sans-serif';c.textAlign='left';
+  for(let i=0;i<3;i++){c.fillStyle=i<p.lives?'#ff5a6e':'#4a4378';c.beginPath();const hx=22+i*24,hy=22;
+    c.moveTo(hx,hy+9);c.bezierCurveTo(hx-14,hy-2,hx-6,hy-12,hx,hy-4);c.bezierCurveTo(hx+6,hy-12,hx+14,hy-2,hx,hy+9);c.fill()}
+  c.fillStyle='#ffd23a';c.fillText(`★ ${p.stars}`,100,32);c.fillStyle='#f2efff';c.fillText(HEROES[pHero].name,160,32);
+  if(boss.alive&&cam>3000){c.fillStyle='rgba(15,12,31,.7)';c.fillRect(PW-230,8,222,34);c.fillStyle='#f2efff';c.font='900 13px Nunito, sans-serif';c.fillText('ZOMBIE KING',PW-222,30);
+    c.fillStyle='#4a4378';c.fillRect(PW-128,18,112,14);c.fillStyle='#7cf04a';c.fillRect(PW-128,18,112*boss.hp/boss.max,14)}
+  if(p.msgT>0&&!p.won&&!p.over){c.globalAlpha=Math.min(1,p.msgT/30);c.fillStyle='rgba(15,12,31,.8)';c.fillRect(70,352,500,36);
+    c.fillStyle='#f2efff';c.font='800 16px Nunito, sans-serif';c.textAlign='center';c.fillText(p.msg,320,376);c.globalAlpha=1}
+}
+function pOverlay(title,lines,color){
+  const c=pctx;c.fillStyle='rgba(8,6,18,.72)';c.fillRect(0,0,PW,PH);
+  c.textAlign='center';c.fillStyle=color;c.font='44px Creepster, Impact, sans-serif';c.fillText(title,320,150);
+  c.fillStyle='#f2efff';c.font='800 18px Nunito, sans-serif';lines.forEach((l,i)=>c.fillText(l,320,195+i*28));
+}
+function pLoop(ts){
+  if(!prun)return;
+  if(!pLast)pLast=ts;
+  pAcc+=Math.min(100,ts-pLast);pLast=ts;
+  while(pAcc>=1000/60&&!pq.won&&!pq.over){pStep();pAcc-=1000/60}
+  pDraw();
+  const h=HEROES[pHero].name;
+  if(pq.won){prun=false;
+    pOverlay(`${h} saved Princess Iqra!`,
+      [pHero==='izyan'?'Iqra gives her big brother Izyan a giant hug!':`Iqra says: "Thank you, ${h}! You're so brave!"`,`Stars collected: ${pq.stars} of ${STARS.length}`,'Press Start to play again'],'#ffd23a');
+    document.getElementById('questGo').textContent='Play again';return}
+  if(pq.over){prun=false;pOverlay('Game over',['The zombies got you this time.','Press Start to try again!'],'#7cf04a');
+    document.getElementById('questGo').textContent='Try again';return}
+  requestAnimationFrame(pLoop);
+}
+function pIdle(){
+  pReset();pDraw();
+  pOverlay('Save Princess Iqra!',['The Zombie King has locked Izyan\'s sister in a cage.','Fight your way through Zombie World to free her!','Pick your hero, then press Start.'],'#7cf04a');
+}
+const qpick=document.getElementById('questPick');
+qpick.innerHTML=Object.keys(HEROES).map(k=>`<button class="btn" id="qpick-${k}" data-k="${k}" aria-pressed="${k===pHero}">${HEROES[k].name}</button>`).join('');
+qpick.querySelectorAll('button').forEach(b=>b.onclick=()=>{pHero=b.dataset.k;qpick.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(!prun)pIdle()});
+pIdle();
+if(document.fonts)document.fonts.ready.then(()=>{if(!prun)pIdle()});
+document.getElementById('questGo').onclick=()=>{pReset();pkeys={};pLast=0;pAcc=0;if(!prun){prun=true;requestAnimationFrame(pLoop)}pc.focus&&pc.focus()};
+const KEYMAP={ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right',ArrowUp:'jump',w:'jump',W:'jump',' ':'jump',x:'sword',X:'sword',j:'sword',J:'sword',z:'blast',Z:'blast',k:'blast',K:'blast'};
+addEventListener('keydown',e=>{if(!prun)return;const a=KEYMAP[e.key];if(a){pkeys[a]=true;e.preventDefault()}});
+addEventListener('keyup',e=>{const a=KEYMAP[e.key];if(a)pkeys[a]=false});
+addEventListener('blur',()=>{pkeys={}});
+document.querySelectorAll('#pad button').forEach(b=>{
+  const a=b.dataset.a,on=e=>{e.preventDefault();pkeys[a]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}},off=()=>{pkeys[a]=false};
+  b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('lostpointercapture',off);
+  b.addEventListener('contextmenu',e=>e.preventDefault());
+});
+
+/* ---------- Zapper Math ---------- */
+let charge=0,ans=0,zapped=0;
+function mathNew(){
+  const a=1+Math.floor(Math.random()*9),b=1+Math.floor(Math.random()*9),add=Math.random()<.7||a<b;
+  ans=add?a+b:a-b;
+  document.getElementById('sum').textContent=`${a} ${add?'+':'−'} ${b} = ?`;
+  const opts=new Set([ans]);while(opts.size<4){const o=ans+Math.floor(Math.random()*7)-3;if(o>=0)opts.add(o)}
+  const box=document.getElementById('mathChoices');
+  box.innerHTML=[...opts].sort(()=>Math.random()-.5).map((o,i)=>`<button class="choice" id="m${i}" style="text-align:center;font-size:1.6rem">${o}</button>`).join('');
+  box.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{
+    const msg=document.getElementById('mathMsg');
+    if(+btn.textContent===ans){charge=Math.min(100,charge+10);msg.style.color='var(--slime)';msg.textContent='Correct! Zapper charging...';}
+    else{msg.style.color='var(--pumpkin)';msg.textContent=`Almost! The answer was ${ans}. Try the next one.`;}
+    document.getElementById('meter').style.width=charge+'%';
+    if(charge>=100){zapped++;msg.style.color='var(--slime)';msg.textContent=`ZAP! The Laser Zapper sent a zombie back to bed! Zombies zapped: ${zapped}`;charge=0;
+      setTimeout(()=>{document.getElementById('meter').style.width='0%'},1600)}
+    mathNew();
+  });
+}
+mathNew();
+</script>
+</body>
+</html>
