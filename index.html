@@ -21,7 +21,7 @@ body{margin:0} [hidden]{display:none!important} img{max-width:100%}
 *{box-sizing:border-box}
 body{background:var(--night);color:var(--text);font-family:var(--body);font-size:18px;line-height:1.5;
   background-image:radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:30px 30px}
-@media (min-width:1100px){body{background-image:radial-gradient(circle at calc(50% + 560px) 70px, #fff7c2 0 34px, rgba(255,247,194,.15) 35px 70px, transparent 71px),
+@media (min-width:1260px){body{background-image:radial-gradient(circle at calc(50% + 560px) 70px, #fff7c2 0 34px, rgba(255,247,194,.15) 35px 70px, transparent 71px),
   radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:auto, 30px 30px;background-repeat:no-repeat,repeat}}
 button,.card,.choice,canvas{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .wrap{max-width:960px;margin:0 auto;padding-block:20px 60px;
@@ -37,14 +37,14 @@ p{margin:0}
 .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
 .hero p{color:var(--dim);font-size:1.15rem;margin-top:12px;max-width:36ch}
 .squad{display:flex;gap:8px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
-.squad svg{width:min(30%,130px);height:auto}
-@media (max-width:640px){.squad svg{width:min(26%,96px)}.hero p{font-size:1.05rem}}
-@media (max-width:520px){#games > .tabs{display:grid;grid-template-columns:1fr 1fr}.bay{padding:16px}}
+.squad svg{width:min(23%,115px);height:auto}
+@media (max-width:640px){.squad svg{width:min(23%,86px)}.hero p{font-size:1.05rem}}
+@media (max-width:520px){.bay{padding:16px}}
 @media (max-width:640px){.hero{grid-template-columns:1fr}}
 .bay{background:var(--stone);border:3px solid var(--line);border-radius:28px 28px 16px 16px;padding:22px;display:flex;flex-direction:column;gap:16px;
   box-shadow:0 6px 0 #0b0916}
-.label{font-weight:900;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pumpkin)}
-.btn{font-family:var(--body);font-weight:900;font-size:1.05rem;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;
+.label{font-weight:900;font-size:.9rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pumpkin)}
+.btn{font-family:var(--body);font-weight:900;font-size:1.05rem;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;min-height:52px;
   background:var(--slime);color:#102204;box-shadow:0 5px 0 #3f8a1c;transition:transform .08s}
 .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #3f8a1c}
 .btn.alt{background:var(--pumpkin);color:#2a1300;box-shadow:0 5px 0 #a85e10}
@@ -65,7 +65,11 @@ p{margin:0}
 .field{display:flex;flex-direction:column;gap:6px;font-weight:800}
 .field input{font:inherit;font-size:1.2rem;padding:12px;border-radius:12px;border:3px solid var(--line);background:var(--night);color:var(--text);max-width:320px}
 .tabs{display:flex;gap:10px;flex-wrap:wrap}
-.tabs .btn[aria-pressed="true"]{background:var(--pumpkin);color:#2a1300;box-shadow:0 5px 0 #a85e10}
+#games > .tabs{display:grid;grid-template-columns:repeat(4,1fr)}
+#games > .tabs .btn{background:var(--moss);color:var(--text);box-shadow:0 5px 0 #120f22;border:3px solid var(--line);padding:12px 10px;line-height:1.2}
+#games > .tabs .btn:hover{border-color:var(--pumpkin)}
+@media (max-width:640px){#games > .tabs{grid-template-columns:1fr 1fr}}
+.tabs .btn[aria-pressed="true"],#games > .tabs .btn[aria-pressed="true"]{background:var(--pumpkin);color:#2a1300;box-shadow:0 5px 0 #a85e10;border-color:var(--pumpkin)}
 .tabs.pick .btn{background:var(--moss);color:var(--text);box-shadow:0 5px 0 #120f22}
 .tabs.pick .btn[aria-pressed="true"]{background:var(--sky);color:#00203a;box-shadow:0 5px 0 #1a6aa8}
 .stack{display:flex;flex-direction:column;gap:14px}
@@ -102,7 +106,9 @@ canvas{width:100%;max-width:820px;aspect-ratio:16/10;border-radius:14px;border:3
 .stage.play .pad .btn{min-width:74px;min-height:74px;border-radius:50%;font-size:.95rem;padding:6px}
 .stage.play .stagebar .btn{padding:10px 16px}
 @media (orientation:portrait){.stage.play .turn{display:block;color:var(--dim);font-size:.85rem;font-weight:800;line-height:1.2;min-width:0}}
-@media (max-width:480px){.stage.play .pad .btn{min-width:62px;min-height:62px;font-size:.85rem}.stage.play .padL,.stage.play .padR{gap:8px}}
+@media (max-width:480px){.stage.play .pad .btn{min-width:62px;min-height:62px;font-size:.9rem}.stage.play .padL,.stage.play .padR{gap:8px}}
+@media (max-width:380px){.stage.play .pad .btn{min-width:52px;min-height:52px;font-size:.85rem;padding:4px}.stage.play .padL,.stage.play .padR{gap:6px}.stage.play{column-gap:4px}}
+.stage.play .turn{font-size:.95rem!important}
 @media (orientation:landscape){
   .stage.play{grid-template-areas:"bar bar bar" "L cv R";grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr)}
   .stage.play .padR{flex-direction:column-reverse}
@@ -121,11 +127,11 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
 .dialog h2{font-size:clamp(2rem,8vw,2.8rem)}
 .dialog .lead{color:var(--dim);font-size:1.1rem}
 .mini{display:flex;justify-content:center;gap:4px}
-.mini svg{width:72px;height:auto}
+.mini svg{width:min(22%,72px);height:auto}
 .doors{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:460px){.doors{grid-template-columns:1fr}}
 .door{font-family:var(--body);font-weight:900;font-size:1.15rem;border:0;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.2}
-.door small{font-weight:700;font-size:.9rem;opacity:.85}
+.door small{font-weight:700;font-size:.95rem;opacity:.85}
 .door.play{background:var(--slime);color:#102204;box-shadow:0 6px 0 #3f8a1c}
 .door.book{background:var(--grape);color:#21053a;box-shadow:0 6px 0 #7a3fb0}
 .door:active{transform:translateY(4px);box-shadow:none}
@@ -143,7 +149,7 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
 .textlink{background:none;border:0;color:var(--grape);font:inherit;font-weight:900;text-decoration:underline;cursor:pointer;padding:0}
 @keyframes bob{50%{transform:translateY(-6px)}}
 .squad svg{animation:bob 2.4s ease-in-out infinite}
-.squad svg:nth-child(2){animation-delay:.4s}.squad svg:nth-child(3){animation-delay:.8s}
+.squad svg:nth-child(2){animation-delay:.4s}.squad svg:nth-child(3){animation-delay:.8s}.squad svg:nth-child(4){animation-delay:1.2s}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -154,7 +160,7 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     <div>
       <div class="label">Top secret zombie patrol</div>
       <h1>Zombie World</h1>
-      <p>The silly zombies are out of the graveyard! Jack, Izyan and Felix put on their T-visor helmets, grab their blasters, and get ready to splat them. The Zombie King has even kidnapped Princess Iqra, Izyan's sister! Find out which hero you are, then play the games to save the town.</p>
+      <p>The silly zombies are out of the graveyard! Jack, Izyan, Felix and Iqra put on their T-visor helmets, grab their blasters, and get ready to splat them. The Zombie King has even stolen the Golden Trophy of Zombie World! Find out which hero you are, then play the games to save the town.</p>
       <p style="margin-top:10px"><button class="textlink" id="openBook">Join the Book Club</button></p>
     </div>
     <div class="squad" id="squad"></div>
@@ -177,7 +183,7 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
       <button class="btn" id="tab-memory" aria-pressed="true">Graveyard Match</button>
       <button class="btn" id="tab-catch" aria-pressed="false">Zombie Blaster</button>
       <button class="btn" id="tab-math" aria-pressed="false">Zapper Math</button>
-      <button class="btn" id="tab-quest" aria-pressed="false">Save Princess Iqra</button>
+      <button class="btn" id="tab-quest" aria-pressed="false">Zombie King Showdown</button>
     </div>
 
     <div id="g-memory" class="stack">
@@ -205,12 +211,12 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     </div>
 
     <div id="g-quest" class="stack" hidden>
-      <p>The Zombie King has trapped Princess Iqra, Izyan's little sister, in his tower! Run and jump through Zombie World. Swing your sword, fire your blaster, or jump on zombies' heads to splat them. Beat the Zombie King to open the cage.</p>
+      <p>The Zombie King stole the Golden Trophy and locked it in his tower! Pick Jack, Izyan, Felix or Iqra, then run and jump through Zombie World. Swing your sword, fire your blaster, or jump on zombies' heads to splat them. Beat the Zombie King to win the trophy back.</p>
       <div class="tabs pick" role="group" aria-label="Pick your hero" id="questPick"></div>
       <p class="keys">Keyboard: <kbd>←</kbd> <kbd>→</kbd> move · <kbd>↑</kbd> or <kbd>Space</kbd> jump · <kbd>X</kbd> sword · <kbd>Z</kbd> blaster</p>
       <div class="stage" id="stageQ">
         <div class="stagebar"><button class="btn ghost exit" id="exitQ">✕ Exit</button><button class="btn" id="questGo">Start!</button><span class="turn">Turn sideways for a bigger game</span></div>
-        <canvas id="cv2" width="640" height="400" tabindex="0" aria-label="Save Princess Iqra game"></canvas>
+        <canvas id="cv2" width="640" height="400" tabindex="0" aria-label="Zombie King Showdown game"></canvas>
         <div class="pad" id="pad">
           <div class="padL"><button class="btn ghost" data-a="left" aria-label="Move left">◀</button><button class="btn ghost" data-a="right" aria-label="Move right">▶</button></div>
           <div class="padR"><button class="btn alt" data-a="blast">Blast</button><button class="btn alt" data-a="sword">Sword</button><button class="btn" data-a="jump">Jump</button></div>
@@ -219,7 +225,7 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     </div>
   </section>
 
-  <footer>Zombie World stars Jack, Izyan, Felix and Princess Iqra. No real zombies were harmed. Book Club answers stay on your device and are never sent anywhere.</footer>
+  <footer>Zombie World stars Jack, Izyan, Felix and Iqra. No real zombies were harmed. Book Club answers stay on your device and are never sent anywhere.</footer>
 </div>
 
 <div class="modal" id="welcome" role="dialog" aria-modal="true" aria-labelledby="bcTitle" hidden>
@@ -233,7 +239,9 @@ const HEROES={
   izyan:{name:"Izyan",shirt:"#4fc3ff",helmet:"#3b4a8a",shot:"#4fc3ff",gear:"Laser Zapper",
     about:"You are super smart and love to invent things. Izyan built his own Laser Zapper, and it zaps zombies so hard they snore all the way back to bed."},
   felix:{name:"Felix",shirt:"#c77dff",helmet:"#ffd23a",shot:"#ff5a6e",gear:"Turbo Blaster",
-    about:"You are fast and funny! Felix's Turbo Blaster shoots super-speedy goo balls, and he never misses."}
+    about:"You are fast and funny! Felix's Turbo Blaster shoots super-speedy goo balls, and he never misses."},
+  iqra:{name:"Iqra",shirt:"#ff7ac8",helmet:"#2fd6b0",shot:"#ff7ac8",gear:"Sparkle Blaster",tail:"#2b1a12",
+    about:"You are clever, kind and super brave! Iqra is Izyan's sister, and her Sparkle Blaster shoots glitter goo that makes zombies sneeze all the way home."}
 };
 function heroSVG(k){
   const h=HEROES[k];
@@ -241,10 +249,12 @@ function heroSVG(k){
   <rect x="28" y="70" width="44" height="40" rx="12" fill="${h.shirt}" stroke="#0b0916" stroke-width="4"/>
   <rect x="32" y="108" width="14" height="18" rx="4" fill="#2c2a4a" stroke="#0b0916" stroke-width="3"/>
   <rect x="54" y="108" width="14" height="18" rx="4" fill="#2c2a4a" stroke="#0b0916" stroke-width="3"/>
+  ${h.tail?`<path d="M22 50q-14 8-10 30q6-6 12-20z" fill="${h.tail}" stroke="#0b0916" stroke-width="3"/>`:''}
   <path d="M20 46a30 30 0 0160 0v14q0 8-8 8H28q-8 0-8-8z" fill="${h.helmet}" stroke="#0b0916" stroke-width="4"/>
   <rect x="47" y="14" width="6" height="18" rx="3" fill="${h.shirt}" stroke="#0b0916" stroke-width="2"/>
   <path d="M30 38h40v10H56v16H44V48H30z" fill="#0b0916"/>
   <rect x="33" y="40" width="10" height="3" rx="1.5" fill="${h.shot}" opacity=".8"/>
+  ${h.tail?`<path d="M14 40l-8-7v14zM14 40l8-7v14z" fill="${h.shot}" stroke="#0b0916" stroke-width="2"/><circle cx="14" cy="40" r="3" fill="#0b0916"/>`:''}
   <text x="50" y="96" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="18" fill="#0b0916">${h.name[0]}</text>
   <rect x="62" y="80" width="16" height="10" rx="5" fill="${h.shirt}" stroke="#0b0916" stroke-width="3"/>
   <rect x="72" y="74" width="34" height="14" rx="5" fill="#5b5f73" stroke="#0b0916" stroke-width="3"/>
@@ -261,12 +271,12 @@ document.getElementById('squad').innerHTML=Object.keys(HEROES).map(heroSVG).join
 
 /* ---------- Questionnaire ---------- */
 const QS=[
- {q:"The zombies are coming! What do you do first?",a:[["Lead everyone to safety",'jack'],["Build a zombie trap",'izyan'],["Zoom away super fast",'felix']]},
- {q:"Pick your zombie-fighting blaster!",a:[["Slime Blaster",'jack'],["Laser Zapper",'izyan'],["Turbo Blaster",'felix']]},
- {q:"Where is the best hideout?",a:[["A tree fort",'jack'],["A secret lab",'izyan'],["A skate park",'felix']]},
- {q:"A zombie steals your snack! You...",a:[["Chase it and get it back",'jack'],["Trick it with a fake snack",'izyan'],["Tell a joke so it drops it",'felix']]},
- {q:"What's your favorite color?",a:[["Orange",'jack'],["Blue",'izyan'],["Purple",'felix']]},
- {q:"What would you yell when you win?",a:[["Zombies, you're done!",'jack'],["My plan worked!",'izyan'],["Too fast for you!",'felix']]}
+ {q:"The zombies are coming! What do you do first?",a:[["Lead everyone to safety",'jack'],["Build a zombie trap",'izyan'],["Zoom away super fast",'felix'],["Make a sparkly shield",'iqra']]},
+ {q:"Pick your zombie-fighting blaster!",a:[["Slime Blaster",'jack'],["Laser Zapper",'izyan'],["Turbo Blaster",'felix'],["Sparkle Blaster",'iqra']]},
+ {q:"Where is the best hideout?",a:[["A tree fort",'jack'],["A secret lab",'izyan'],["A skate park",'felix'],["A secret garden",'iqra']]},
+ {q:"A zombie steals your snack! You...",a:[["Chase it and get it back",'jack'],["Trick it with a fake snack",'izyan'],["Tell a joke so it drops it",'felix'],["Ask nicely, then splat it with glitter",'iqra']]},
+ {q:"What's your favorite color?",a:[["Orange",'jack'],["Blue",'izyan'],["Purple",'felix'],["Pink",'iqra']]},
+ {q:"What would you yell when you win?",a:[["Zombies, you're done!",'jack'],["My plan worked!",'izyan'],["Too fast for you!",'felix'],["Sparkle power!",'iqra']]}
 ];
 let qi=0,tally={},pilot="";
 const qb=document.getElementById('quizBody');
@@ -359,6 +369,7 @@ function drawHero(x){
   ctx.fillStyle='#5b5f73';ctx.fillRect(x+14,y-34,12,40);
   ctx.fillStyle=h.shot;ctx.fillRect(x+15,y-40,10,8);
   /* helmet with T visor */
+  if(h.tail){ctx.fillStyle=h.tail;ctx.beginPath();ctx.ellipse(x-20,y-4,6,14,0.3,0,7);ctx.fill();ctx.fillStyle=h.shot;ctx.fillRect(x-24,y-20,9,6)}
   ctx.fillStyle=h.helmet;ctx.beginPath();ctx.arc(x,y-14,19,Math.PI,0);ctx.lineTo(x+19,y-2);ctx.lineTo(x-19,y-2);ctx.closePath();ctx.fill();
   ctx.fillStyle='#0b0916';ctx.fillRect(x-13,y-20,26,6);ctx.fillRect(x-4,y-14,8,11);
   ctx.fillStyle=h.shirt;ctx.fillRect(x-2,y-38,4,8);
@@ -419,7 +430,7 @@ addEventListener('keyup',e=>{keys[e.key]=false});
 function pointer(e){const r=cv.getBoundingClientRect();px=(e.clientX-r.left)/r.width*640}
 cv.addEventListener('pointerdown',pointer);cv.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')pointer(e)});
 
-/* ---------- Save Princess Iqra (side-scroller) ---------- */
+/* ---------- Zombie King Showdown (side-scroller) ---------- */
 const pc=document.getElementById('cv2'),pctx=pc.getContext('2d');
 const PW=640,PH=400,WORLD=4000,GY=360,CAGE=3870;
 const GROUND=[[0,800],[890,1500],[1600,2300],[2400,3200],[3290,4000]];
@@ -447,7 +458,7 @@ function say(m){pq.msg=m;pq.msgT=150}
 function hurtZ(z,d){
   z.hp-=d;z.flash=12;
   if(z.hp<=0){z.alive=false;pq.splats.push({x:z.x+z.w/2,y:z.y+z.h/2,t:26,big:z.boss});
-    if(z.boss)say('You splatted the Zombie King! Run to the cage and free Iqra!')}
+    if(z.boss)say('You splatted the Zombie King! Run and grab the Golden Trophy!')}
 }
 function loseLife(){
   const p=pq;p.lives--;
@@ -500,24 +511,23 @@ function pStep(){
   }
   const boss=p.zs.find(z=>z.boss);
   if(p.x+p.w>CAGE){
-    if(boss.alive){p.x=CAGE-p.w;if(p.msgT<60)say('Splat the Zombie King to open the cage!')}
+    if(boss.alive){p.x=CAGE-p.w;if(p.msgT<60)say('Splat the Zombie King to unlock the trophy!')}
     else p.won=true;
   }
   if(p.msgT>0)p.msgT--;
   p.cam=Math.max(0,Math.min(WORLD-PW,p.x-260));
 }
 /* ---- drawing ---- */
-function drawIqra(c,x,y,free){
-  /* x = center, y = feet */
-  c.fillStyle='#2b1a12';c.beginPath();c.ellipse(x,y-50,17,22,0,0,7);c.fill();
-  c.fillStyle='#ff7ac8';c.beginPath();c.moveTo(x-20,y);c.lineTo(x+20,y);c.lineTo(x+9,y-34);c.lineTo(x-9,y-34);c.closePath();c.fill();
-  c.fillStyle='#f2c39b';
-  if(free){c.fillRect(x-16,y-52,5,18);c.fillRect(x+11,y-52,5,18)}else{c.fillRect(x-14,y-32,5,14);c.fillRect(x+9,y-32,5,14)}
-  c.beginPath();c.arc(x,y-50,13,0,7);c.fill();
-  c.fillStyle='#2b1a12';c.beginPath();c.arc(x,y-56,13,Math.PI,0);c.fill();
-  c.fillStyle='#0b0916';c.beginPath();c.arc(x-5,y-49,2,0,7);c.arc(x+5,y-49,2,0,7);c.fill();
-  c.strokeStyle='#0b0916';c.lineWidth=2;c.beginPath();free?c.arc(x,y-45,5,0.2,Math.PI-0.2):c.arc(x,y-40,4,Math.PI+0.3,-0.3);c.stroke();
-  c.fillStyle='#ffd23a';c.beginPath();c.moveTo(x-11,y-66);c.lineTo(x-11,y-76);c.lineTo(x-5,y-70);c.lineTo(x,y-79);c.lineTo(x+5,y-70);c.lineTo(x+11,y-76);c.lineTo(x+11,y-66);c.closePath();c.fill();
+function drawTrophy(c,x,y,free){
+  /* x = center, y = floor */
+  const glow=free?0.35+Math.sin(pq.t/8)*0.15:0;
+  if(free){c.fillStyle=`rgba(255,210,58,${glow})`;c.beginPath();c.arc(x,y-50,40,0,7);c.fill()}
+  c.fillStyle='#4a3f5a';c.fillRect(x-24,y-22,48,22);
+  c.fillStyle='#ffd23a';c.fillRect(x-14,y-34,28,10);c.fillRect(x-5,y-48,10,16);
+  c.beginPath();c.moveTo(x-22,y-82);c.lineTo(x+22,y-82);c.quadraticCurveTo(x+22,y-46,x,y-46);c.quadraticCurveTo(x-22,y-46,x-22,y-82);c.fill();
+  c.strokeStyle='#ffd23a';c.lineWidth=5;c.beginPath();c.arc(x-22,y-70,9,Math.PI/2,Math.PI*1.5);c.stroke();c.beginPath();c.arc(x+22,y-70,9,-Math.PI/2,Math.PI/2);c.stroke();
+  c.fillStyle='#fff3a6';c.fillRect(x-14,y-78,5,22);
+  c.fillStyle='#ff9a2e';c.beginPath();for(let i=0;i<10;i++){const r=i%2?3:7,a=i*Math.PI/5-Math.PI/2;c.lineTo(x+Math.cos(a)*r,y-66+Math.sin(a)*r)}c.closePath();c.fill();
 }
 function drawPlayer(c){
   const p=pq,h=HEROES[pHero];
@@ -527,6 +537,7 @@ function drawPlayer(c){
   if(p.sw===0){c.strokeStyle='#c9cfdf';c.lineWidth=4;c.beginPath();c.moveTo(cx-f*6,y+38);c.lineTo(cx-f*14,y+16);c.stroke();c.fillStyle='#8a5a2b';c.fillRect(cx-f*6-3,y+34,6,6)}
   c.fillStyle=h.shirt;c.fillRect(cx-12,y+20,24,16);
   c.fillStyle='#0b0916';c.font='900 11px Nunito, sans-serif';c.textAlign='center';c.fillText(h.name[0],cx,y+32);
+  if(h.tail){c.fillStyle=h.tail;c.beginPath();c.ellipse(cx-f*13,y+18,4,10,f*0.3,0,7);c.fill();c.fillStyle=h.shot;c.fillRect(cx-f*13-3,y+8,6,4)}
   c.fillStyle=h.helmet;c.beginPath();c.arc(cx,y+12,12,0,7);c.fill();
   c.fillStyle=h.shirt;c.fillRect(cx-2,y-4,4,7);
   c.fillStyle='#0b0916';c.fillRect(cx-8+f*3,y+7,16,4);c.fillRect(cx-2+f*3,y+7,4,12);
@@ -576,7 +587,7 @@ function pDraw(){
   }
   for(const it of p.items)if(!it.got){c.save();c.translate(it.x,it.y+Math.sin((p.t+it.x)/12)*3);c.fillStyle='#ffd23a';c.beginPath();
     for(let i=0;i<10;i++){const r=i%2?5:11,a=i*Math.PI/5-Math.PI/2;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();c.restore()}
-  drawIqra(c,CAGE+60,GY,!boss.alive||p.won);
+  drawTrophy(c,CAGE+60,GY,!boss.alive||p.won);
   if(!p.won){c.fillStyle=boss.alive?'#9aa0b5':'rgba(154,160,181,.35)';for(let i=0;i<6;i++)c.fillRect(CAGE+28+i*13,GY-95,4,95);c.fillRect(CAGE+24,GY-98,76,5)}
   for(const z of p.zs)if(z.alive)drawZ(c,z);
   const sh=HEROES[pHero].shot;c.fillStyle=sh;for(const s of p.shots){c.beginPath();c.arc(s.x,s.y,5,0,7);c.fill()}
@@ -609,8 +620,8 @@ function pLoop(ts){
   pDraw();
   const h=HEROES[pHero].name;
   if(pq.won){prun=false;
-    pOverlay(`${h} saved Princess Iqra!`,
-      [pHero==='izyan'?'Iqra gives her big brother Izyan a giant hug!':`Iqra says: "Thank you, ${h}! You're so brave!"`,`Stars collected: ${pq.stars} of ${STARS.length}`,'Press Start to play again'],'#ffd23a');
+    pOverlay(`${h} won the Golden Trophy!`,
+      ['The Zombie King is splatted and Zombie World is safe!',`Stars collected: ${pq.stars} of ${STARS.length}`,'Press Start to play again'],'#ffd23a');
     document.getElementById('questGo').textContent='Play again';return}
   if(pq.over){prun=false;pOverlay('Game over',['The zombies got you this time.','Press Start to try again!'],'#7cf04a');
     document.getElementById('questGo').textContent='Try again';return}
@@ -618,7 +629,7 @@ function pLoop(ts){
 }
 function pIdle(){
   pReset();pDraw();
-  pOverlay('Save Princess Iqra!',['The Zombie King has locked Izyan\'s sister in a cage.','Fight your way through Zombie World to free her!','Pick your hero, then press Start.'],'#7cf04a');
+  pOverlay('Zombie King Showdown',['The Zombie King stole the Golden Trophy!','Fight your way to his tower and win it back.','Pick your hero, then press Start.'],'#7cf04a');
 }
 const qpick=document.getElementById('questPick');
 qpick.innerHTML=Object.keys(HEROES).map(k=>`<button class="btn" id="qpick-${k}" data-k="${k}" aria-pressed="${k===pHero}">${HEROES[k].name}</button>`).join('');
