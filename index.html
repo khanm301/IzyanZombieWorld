@@ -20,8 +20,10 @@ body{margin:0} [hidden]{display:none!important} img{max-width:100%}
 }
 *{box-sizing:border-box}
 body{background:var(--night);color:var(--text);font-family:var(--body);font-size:18px;line-height:1.5;
-  background-image:radial-gradient(circle at 85% 6%, #fff7c2 0 34px, rgba(255,247,194,.15) 35px 70px, transparent 71px),
-  radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:auto, 30px 30px;background-repeat:no-repeat,repeat}
+  background-image:radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:30px 30px}
+@media (min-width:1100px){body{background-image:radial-gradient(circle at calc(50% + 560px) 70px, #fff7c2 0 34px, rgba(255,247,194,.15) 35px 70px, transparent 71px),
+  radial-gradient(#3a3366 1.2px, transparent 1.3px);background-size:auto, 30px 30px;background-repeat:no-repeat,repeat}}
+button,.card,.choice,canvas{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .wrap{max-width:960px;margin:0 auto;padding-block:20px 60px;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
   display:flex;flex-direction:column;gap:28px}
@@ -36,6 +38,8 @@ p{margin:0}
 .hero p{color:var(--dim);font-size:1.15rem;margin-top:12px;max-width:36ch}
 .squad{display:flex;gap:8px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
 .squad svg{width:min(30%,130px);height:auto}
+@media (max-width:640px){.squad svg{width:min(26%,96px)}.hero p{font-size:1.05rem}}
+@media (max-width:520px){#games > .tabs{display:grid;grid-template-columns:1fr 1fr}.bay{padding:16px}}
 @media (max-width:640px){.hero{grid-template-columns:1fr}}
 .bay{background:var(--stone);border:3px solid var(--line);border-radius:28px 28px 16px 16px;padding:22px;display:flex;flex-direction:column;gap:16px;
   box-shadow:0 6px 0 #0b0916}
@@ -72,13 +76,39 @@ p{margin:0}
 .card.open,.card.done{background:var(--night);border-color:var(--pumpkin)}
 .card.done{border-color:var(--slime)}
 .card svg{width:100%;height:100%}
-canvas{width:100%;max-width:640px;aspect-ratio:16/10;border-radius:14px;border:3px solid var(--line);background:#0f0c1f;touch-action:none;display:block}
+canvas{width:100%;max-width:820px;aspect-ratio:16/10;border-radius:14px;border:3px solid var(--line);background:#0f0c1f;touch-action:none;display:block}
 .sum{font-family:var(--display);font-size:clamp(2.4rem,10vw,3.8rem);letter-spacing:.05em}
 .meter{height:28px;border-radius:14px;background:var(--night);border:3px solid var(--line);overflow:hidden;max-width:480px}
 .meter b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sky),var(--slime));transition:width .3s}
 .msg{font-weight:800;min-height:1.5em}
-.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:640px}
-.pad .btn{padding:16px 4px;font-size:1rem;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad{display:flex;justify-content:space-between;gap:10px;max-width:820px}
+.padL,.padR{display:flex;gap:10px}
+.pad .btn{min-width:64px;min-height:60px;padding:10px 12px;font-size:1rem;touch-action:none;-webkit-touch-callout:none}
+.stage{display:flex;flex-direction:column;gap:12px}
+.stagebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.stage .exit,.stage .turn{display:none}
+.stage.play{position:fixed;inset:0;z-index:100;background:var(--night);touch-action:none;
+  padding:max(8px,env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));
+  display:grid;grid-template-areas:"bar bar" "cv cv" "L R";grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:8px;overflow:hidden}
+.stage.play .stagebar{grid-area:bar;flex-wrap:wrap;min-width:0;gap:6px 12px}
+.stage.play .stagebar .btn{white-space:nowrap}
+.stage.play .score{font-size:1rem}
+.stage.play .turn{flex-basis:100%}
+.stage.play .exit{display:inline-block}
+.stage.play canvas{grid-area:cv;justify-self:center;align-self:center;max-width:none}
+.stage.play .pad{display:contents}
+.stage.play .padL{grid-area:L;justify-self:start;align-self:end}
+.stage.play .padR{grid-area:R;justify-self:end;align-self:end}
+.stage.play .pad .btn{min-width:74px;min-height:74px;border-radius:50%;font-size:.95rem;padding:6px}
+.stage.play .stagebar .btn{padding:10px 16px}
+@media (orientation:portrait){.stage.play .turn{display:block;color:var(--dim);font-size:.85rem;font-weight:800;line-height:1.2;min-width:0}}
+@media (max-width:480px){.stage.play .pad .btn{min-width:62px;min-height:62px;font-size:.85rem}.stage.play .padL,.stage.play .padR{gap:8px}}
+@media (orientation:landscape){
+  .stage.play{grid-template-areas:"bar bar bar" "L cv R";grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr)}
+  .stage.play .padR{flex-direction:column-reverse}
+}
+@media (hover:hover) and (pointer:fine){.stage:not(.play) .pad{display:none}}
+@media (pointer:coarse){.keys{display:none}}
 .keys{color:var(--dim);font-size:.95rem}
 .keys kbd{font-family:var(--body);font-weight:900;background:var(--night);border:2px solid var(--line);border-radius:6px;padding:0 6px;color:var(--text)}
 footer{color:var(--dim);font-size:.9rem;text-align:center}
@@ -130,9 +160,10 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     <div id="g-catch" class="stack" hidden>
       <p>Pick your hero. Your blaster fires all by itself, so just move left and right to splat the zombies before they reach the ground! Use the arrow keys, or drag your finger on the screen.</p>
       <div class="tabs pick" role="group" aria-label="Pick your hero" id="heroPick"></div>
-      <div class="score" id="catchScore">Zombies splatted: 0 · Lives: 3</div>
-      <canvas id="cv" width="640" height="400"></canvas>
-      <div><button class="btn alt" id="catchGo">Start!</button></div>
+      <div class="stage" id="stageB">
+        <div class="stagebar"><button class="btn ghost exit" id="exitB">✕ Exit</button><button class="btn alt" id="catchGo">Start!</button><div class="score" id="catchScore">Zombies splatted: 0 · Lives: 3</div><span class="turn">Turn sideways for a bigger game</span></div>
+        <canvas id="cv" width="640" height="400"></canvas>
+      </div>
     </div>
 
     <div id="g-math" class="stack" hidden>
@@ -146,16 +177,15 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     <div id="g-quest" class="stack" hidden>
       <p>The Zombie King has trapped Princess Iqra, Izyan's little sister, in his tower! Run and jump through Zombie World. Swing your sword, fire your blaster, or jump on zombies' heads to splat them. Beat the Zombie King to open the cage.</p>
       <div class="tabs pick" role="group" aria-label="Pick your hero" id="questPick"></div>
-      <canvas id="cv2" width="640" height="400" tabindex="0" aria-label="Save Princess Iqra game"></canvas>
-      <div class="pad" id="pad">
-        <button class="btn ghost" data-a="left" aria-label="Move left">◀</button>
-        <button class="btn ghost" data-a="right" aria-label="Move right">▶</button>
-        <button class="btn" data-a="jump">Jump</button>
-        <button class="btn alt" data-a="sword">Sword</button>
-        <button class="btn alt" data-a="blast">Blast</button>
-      </div>
       <p class="keys">Keyboard: <kbd>←</kbd> <kbd>→</kbd> move · <kbd>↑</kbd> or <kbd>Space</kbd> jump · <kbd>X</kbd> sword · <kbd>Z</kbd> blaster</p>
-      <div><button class="btn" id="questGo">Start!</button></div>
+      <div class="stage" id="stageQ">
+        <div class="stagebar"><button class="btn ghost exit" id="exitQ">✕ Exit</button><button class="btn" id="questGo">Start!</button><span class="turn">Turn sideways for a bigger game</span></div>
+        <canvas id="cv2" width="640" height="400" tabindex="0" aria-label="Save Princess Iqra game"></canvas>
+        <div class="pad" id="pad">
+          <div class="padL"><button class="btn ghost" data-a="left" aria-label="Move left">◀</button><button class="btn ghost" data-a="right" aria-label="Move right">▶</button></div>
+          <div class="padR"><button class="btn alt" data-a="blast">Blast</button><button class="btn alt" data-a="sword">Sword</button><button class="btn" data-a="jump">Jump</button></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -349,7 +379,7 @@ function frame(){
 function idle(){scene();drawHero(320);ctx.fillStyle='#7cf04a';ctx.font='38px Creepster, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('Press Start!',320,170)}
 idle();
 if(document.fonts)document.fonts.ready.then(()=>{if(!running)idle()});
-document.getElementById('catchGo').onclick=()=>{zombies=[];shots=[];splats=[];score=0;lives=3;px=320;tick=0;scoreTxt();if(!running){running=true;frame()}};
+document.getElementById('catchGo').onclick=()=>{enterPlay('stageB');zombies=[];shots=[];splats=[];score=0;lives=3;px=320;tick=0;scoreTxt();if(!running){running=true;frame()}};
 addEventListener('keydown',e=>{if(running&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){keys[e.key]=true;e.preventDefault()}});
 addEventListener('keyup',e=>{keys[e.key]=false});
 function pointer(e){const r=cv.getBoundingClientRect();px=(e.clientX-r.left)/r.width*640}
@@ -561,7 +591,7 @@ qpick.innerHTML=Object.keys(HEROES).map(k=>`<button class="btn" id="qpick-${k}" 
 qpick.querySelectorAll('button').forEach(b=>b.onclick=()=>{pHero=b.dataset.k;qpick.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(!prun)pIdle()});
 pIdle();
 if(document.fonts)document.fonts.ready.then(()=>{if(!prun)pIdle()});
-document.getElementById('questGo').onclick=()=>{pReset();pkeys={};pLast=0;pAcc=0;if(!prun){prun=true;requestAnimationFrame(pLoop)}pc.focus&&pc.focus()};
+document.getElementById('questGo').onclick=()=>{enterPlay('stageQ');pReset();pkeys={};pLast=0;pAcc=0;if(!prun){prun=true;requestAnimationFrame(pLoop)}pc.focus&&pc.focus()};
 const KEYMAP={ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right',ArrowUp:'jump',w:'jump',W:'jump',' ':'jump',x:'sword',X:'sword',j:'sword',J:'sword',z:'blast',Z:'blast',k:'blast',K:'blast'};
 addEventListener('keydown',e=>{if(!prun)return;const a=KEYMAP[e.key];if(a){pkeys[a]=true;e.preventDefault()}});
 addEventListener('keyup',e=>{const a=KEYMAP[e.key];if(a)pkeys[a]=false});
@@ -571,6 +601,38 @@ document.querySelectorAll('#pad button').forEach(b=>{
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('lostpointercapture',off);
   b.addEventListener('contextmenu',e=>e.preventDefault());
 });
+
+/* ---------- Full-screen play mode for phones and tablets ---------- */
+const TOUCH=matchMedia('(pointer: coarse)').matches;
+function fitStage(st){
+  const cv=st.querySelector('canvas');
+  if(!st.classList.contains('play')){cv.style.width='';cv.style.height='';return}
+  const cs=getComputedStyle(st),px=parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight),py=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);
+  const bar=st.querySelector('.stagebar').offsetHeight,L=st.querySelector('.padL'),R=st.querySelector('.padR');
+  const land=st.clientWidth>st.clientHeight;
+  let W=st.clientWidth-px,H=st.clientHeight-py-bar-8;
+  if(L){if(land)W-=L.offsetWidth+R.offsetWidth+16;else H-=Math.max(L.offsetHeight,R.offsetHeight)+8}
+  const w=Math.max(120,Math.min(W,H*1.6));cv.style.width=w+'px';cv.style.height=(w/1.6)+'px';
+}
+function enterPlay(id){
+  if(!TOUCH)return;
+  const st=document.getElementById(id);if(st.classList.contains('play'))return;
+  st.classList.add('play');document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
+  try{const r=st.requestFullscreen&&st.requestFullscreen();r&&r.catch&&r.catch(()=>{})}catch(e){}
+  fitStage(st);setTimeout(()=>fitStage(st),300);
+}
+function exitPlay(id){
+  const st=document.getElementById(id);st.classList.remove('play');
+  document.documentElement.style.overflow='';document.body.style.overflow='';
+  try{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}catch(e){}
+  fitStage(st);
+  if(id==='stageB'){running=false;idle();document.getElementById('catchGo').textContent='Start!'}
+  else{prun=false;pIdle();document.getElementById('questGo').textContent='Start!'}
+  st.scrollIntoView({block:'center'});
+}
+document.getElementById('exitB').onclick=()=>exitPlay('stageB');
+document.getElementById('exitQ').onclick=()=>exitPlay('stageQ');
+['resize','orientationchange','fullscreenchange'].forEach(ev=>addEventListener(ev,()=>{['stageB','stageQ'].forEach(id=>{const st=document.getElementById(id);fitStage(st);setTimeout(()=>fitStage(st),250)})}));
 
 /* ---------- Zapper Math ---------- */
 let charge=0,ans=0,zapped=0;
