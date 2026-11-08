@@ -112,6 +112,35 @@ canvas{width:100%;max-width:820px;aspect-ratio:16/10;border-radius:14px;border:3
 .keys{color:var(--dim);font-size:.95rem}
 .keys kbd{font-family:var(--body);font-weight:900;background:var(--night);border:2px solid var(--line);border-radius:6px;padding:0 6px;color:var(--text)}
 footer{color:var(--dim);font-size:.9rem;text-align:center}
+
+/* Book Club welcome popup */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(8,6,18,.82);display:grid;place-items:center;overflow-y:auto;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.dialog{background:var(--stone);border:3px solid var(--line);border-radius:28px 28px 18px 18px;box-shadow:0 8px 0 #0b0916;
+  width:100%;max-width:560px;padding:24px;display:flex;flex-direction:column;gap:16px;text-align:center}
+.dialog h2{font-size:clamp(2rem,8vw,2.8rem)}
+.dialog .lead{color:var(--dim);font-size:1.1rem}
+.mini{display:flex;justify-content:center;gap:4px}
+.mini svg{width:72px;height:auto}
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:460px){.doors{grid-template-columns:1fr}}
+.door{font-family:var(--body);font-weight:900;font-size:1.15rem;border:0;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.2}
+.door small{font-weight:700;font-size:.9rem;opacity:.85}
+.door.play{background:var(--slime);color:#102204;box-shadow:0 6px 0 #3f8a1c}
+.door.book{background:var(--grape);color:#21053a;box-shadow:0 6px 0 #7a3fb0}
+.door:active{transform:translateY(4px);box-shadow:none}
+.door:focus-visible,.yn:focus-visible{outline:4px solid var(--pumpkin);outline-offset:3px}
+.door svg{width:56px;height:56px}
+.bcq{font-size:1.5rem;font-weight:900;line-height:1.25}
+.bcs{color:var(--dim);font-size:1.05rem}
+.yn{font-family:var(--body);font-weight:900;font-size:1.15rem;border:0;border-radius:16px;padding:16px;cursor:pointer}
+.yn.y{background:var(--slime);color:#102204;box-shadow:0 5px 0 #3f8a1c}
+.yn.n{background:var(--moss);color:var(--text);box-shadow:0 5px 0 #120f22}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:900;font-size:.85rem;width:88px}
+.badge i{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:4px solid #0b0916;font-style:normal;font-family:var(--display);font-size:1.6rem;color:#0b0916}
+.clubcard{border:3px dashed var(--grape);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.textlink{background:none;border:0;color:var(--grape);font:inherit;font-weight:900;text-decoration:underline;cursor:pointer;padding:0}
 @keyframes bob{50%{transform:translateY(-6px)}}
 .squad svg{animation:bob 2.4s ease-in-out infinite}
 .squad svg:nth-child(2){animation-delay:.4s}.squad svg:nth-child(3){animation-delay:.8s}
@@ -126,6 +155,7 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
       <div class="label">Top secret zombie patrol</div>
       <h1>Zombie World</h1>
       <p>The silly zombies are out of the graveyard! Jack, Izyan and Felix put on their T-visor helmets, grab their blasters, and get ready to splat them. The Zombie King has even kidnapped Princess Iqra, Izyan's sister! Find out which hero you are, then play the games to save the town.</p>
+      <p style="margin-top:10px"><button class="textlink" id="openBook">Join the Book Club</button></p>
     </div>
     <div class="squad" id="squad"></div>
   </header>
@@ -189,7 +219,11 @@ footer{color:var(--dim);font-size:.9rem;text-align:center}
     </div>
   </section>
 
-  <footer>Zombie World stars Jack, Izyan, Felix and Princess Iqra. No real zombies were harmed.</footer>
+  <footer>Zombie World stars Jack, Izyan, Felix and Princess Iqra. No real zombies were harmed. Book Club answers stay on your device and are never sent anywhere.</footer>
+</div>
+
+<div class="modal" id="welcome" role="dialog" aria-modal="true" aria-labelledby="bcTitle" hidden>
+  <div class="dialog" id="bcBody"></div>
 </div>
 
 <script>
@@ -654,6 +688,74 @@ function mathNew(){
   });
 }
 mathNew();
+
+/* ---------- Welcome popup + Book Club questionnaire (just for fun, nothing is sent) ---------- */
+const BOOK=[
+ {q:"Do you like drawing?",s:"Could you draw a zombie wearing sunglasses?",y:"Yes, I love drawing!",n:"Not really",badge:"Super Artist",c:"#ff9a2e",l:"A"},
+ {q:"Do you like making comic books?",s:"POW! SPLAT! ZAP! Speech bubbles and all!",y:"Yes, comics rock!",n:"Not yet",badge:"Comic Creator",c:"#4fc3ff",l:"C"},
+ {q:"Do you like to color?",s:"Green zombies, purple skies, golden stars...",y:"Yes, I love coloring!",n:"Not really",badge:"Color Master",c:"#7cf04a",l:"M"},
+ {q:"Do you like to read?",s:"Stories about heroes, dragons, robots, or zombies!",y:"Yes, I love books!",n:"Sometimes",badge:"Bookworm",c:"#ffd23a",l:"B"},
+ {q:"Would you like to join our Book Club?",s:"We read fun books, draw our favorite parts, and make comics together.",y:"Yes, sign me up!",n:"Maybe later",badge:"",c:"",l:""}
+];
+const wel=document.getElementById('welcome'),bcb=document.getElementById('bcBody');
+let bcAns=[],lastFocus=null;
+const BOOK_ICON='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 14q13-6 26 2v38q-13-8-26-2z" fill="#fff" stroke="#0b0916" stroke-width="3"/><path d="M58 14q-13-6-26 2v38q13-8 26-2z" fill="#f2efff" stroke="#0b0916" stroke-width="3"/><path d="M12 24q8-3 15 1M12 32q8-3 15 1M37 25q7-4 15-1M37 33q7-4 15-1" stroke="#7a3fb0" stroke-width="3" fill="none" stroke-linecap="round"/></svg>';
+const PLAY_ICON='<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="18" width="52" height="30" rx="15" fill="#2c2a4a" stroke="#0b0916" stroke-width="3"/><rect x="16" y="30" width="14" height="5" rx="2" fill="#7cf04a"/><rect x="20.5" y="25.5" width="5" height="14" rx="2" fill="#7cf04a"/><circle cx="44" cy="29" r="4" fill="#ff9a2e"/><circle cx="50" cy="37" r="4" fill="#4fc3ff"/></svg>';
+function openWelcome(start){
+  lastFocus=document.activeElement;wel.hidden=false;document.body.style.overflow='hidden';
+  start==='book'?bcQuestion(0):bcChoose();
+}
+function closeWelcome(){
+  wel.hidden=true;document.body.style.overflow='';
+  try{sessionStorage.setItem('zwWelcomed','1')}catch(e){}
+  if(lastFocus&&lastFocus.focus)lastFocus.focus();
+}
+function bcFocus(){const f=bcb.querySelector('button');f&&f.focus()}
+function bcChoose(){
+  bcb.innerHTML=`<div class="label">Welcome, hero!</div>
+    <h2 id="bcTitle">Zombie World</h2>
+    <div class="mini">${Object.keys(HEROES).map(heroSVG).join('')}</div>
+    <p class="lead">What would you like to do?</p>
+    <div class="doors">
+      <button class="door play" id="goSite">${PLAY_ICON}Visit the site &amp; play games<small>Quiz, games and zombies!</small></button>
+      <button class="door book" id="goBook">${BOOK_ICON}Sign up for Book Club<small>5 quick questions</small></button>
+    </div>`;
+  document.getElementById('goSite').onclick=closeWelcome;
+  document.getElementById('goBook').onclick=()=>{bcAns=[];bcQuestion(0)};
+  bcFocus();
+}
+function bcQuestion(i){
+  const Q=BOOK[i];
+  bcb.innerHTML=`<div class="label">Book Club · Question ${i+1} of ${BOOK.length}</div>
+    <div class="dots" style="justify-content:center">${BOOK.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</div>
+    <h2 id="bcTitle" class="bcq" style="font-family:var(--body);color:var(--text)">${Q.q}</h2>
+    <p class="bcs">${Q.s}</p>
+    <div class="doors"><button class="yn y" id="bcY">${Q.y}</button><button class="yn n" id="bcN">${Q.n}</button></div>
+    <p><button class="textlink" id="bcSkip">Skip to the games</button></p>`;
+  const next=v=>{bcAns[i]=v;i+1<BOOK.length?bcQuestion(i+1):bcDone()};
+  document.getElementById('bcY').onclick=()=>next(true);
+  document.getElementById('bcN').onclick=()=>next(false);
+  document.getElementById('bcSkip').onclick=closeWelcome;
+  bcFocus();
+}
+function bcDone(){
+  const got=BOOK.slice(0,4).filter((b,k)=>bcAns[k]);
+  const join=bcAns[4];
+  bcb.innerHTML=`<div class="label">Book Club</div>
+    <h2 id="bcTitle">${join?'Welcome to the Club!':'Thanks for playing!'}</h2>
+    <div class="clubcard">
+      <p class="lead" style="color:var(--text);font-weight:800">${got.length?'You earned these badges:':'Every hero starts somewhere. You can earn badges next time!'}</p>
+      ${got.length?`<div class="badges">${got.map(b=>`<div class="badge"><i style="background:${b.c}">${b.l}</i>${b.badge}</div>`).join('')}</div>`:''}
+      <p class="bcs">${join?'You said YES to the Zombie World Book Club! Tell your grown-up so they can help you join.':'No problem! You can come back and join the Book Club any time.'}</p>
+    </div>
+    <button class="btn" id="bcBack" style="align-self:center">Go to Zombie World</button>`;
+  document.getElementById('bcBack').onclick=closeWelcome;
+  bcFocus();
+}
+document.getElementById('openBook').onclick=()=>{bcAns=[];openWelcome('book')};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!wel.hidden)closeWelcome()});
+let seen=false;try{seen=sessionStorage.getItem('zwWelcomed')==='1'}catch(e){}
+if(!seen)openWelcome();
 </script>
 </body>
 </html>
